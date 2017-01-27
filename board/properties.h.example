@@ -1,0 +1,9 @@
+#ifndef PROPERTIES_H
+#define PROPERTIES_H
+
+#define FIREBASE_HOST "hostname without https:// and / on the end"
+#define FIREBASE_AUTH "atm not used"
+#define WIFI_SSID "Wi-Fi point name"
+#define WIFI_PASSWORD "Wi-Fi point password"
+
+#endif
