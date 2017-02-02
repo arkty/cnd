@@ -38,12 +38,8 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot battles) {
                 Log.d(TAG, "Value is: " + battles);
                 final List<String> battleIds = new ArrayList<String>();
-                for (DataSnapshot battle : battles.getChildren()) {
-                    if (!(battle.hasChild("turns") && battle.child("turns").hasChildren())) {
-                        Log.d(TAG, "empty: " + battle);
-                        battleIds.add(battle.getKey());
-                    }
-                }
+                for (DataSnapshot battle : battles.getChildren())
+                    battleIds.add(battle.getKey());
                 if (battleIds.size() == 0) {
                     noBattles.setVisibility(View.VISIBLE);
                     someBattles.setVisibility(View.GONE);

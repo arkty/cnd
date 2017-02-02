@@ -67,8 +67,6 @@ public class StatsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((TextView) getView().findViewById(R.id.name)).setText(playerId);
-        ((TextView) getView().findViewById(R.id.opponentName)).setText(opponentId);
         database.getReference().child("settings").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot settings) {
@@ -91,6 +89,8 @@ public class StatsFragment extends Fragment {
                     public void onDataChange(DataSnapshot player) {
                         final TextView noStats = (TextView) getView().findViewById(R.id.noStats);
                         final LinearLayout someStats = (LinearLayout) getView().findViewById(R.id.someStats);
+
+                        ((TextView) getView().findViewById(R.id.name)).setText(player.child("name").getValue().toString());
 
                         if (player.hasChild("hp") && player.hasChild("mana")) {
                             someStats.setVisibility(View.VISIBLE);
@@ -119,6 +119,7 @@ public class StatsFragment extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot opponent) {
+                        ((TextView) getView().findViewById(R.id.opponentName)).setText(opponent.child("name").getValue().toString());
                         final ImageView noStats = (ImageView) getView().findViewById(R.id.opponent);
 
                         if (opponent.hasChild("hp") && opponent.hasChild("mana")) {
