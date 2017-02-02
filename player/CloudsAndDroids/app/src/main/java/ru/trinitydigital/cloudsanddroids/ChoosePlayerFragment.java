@@ -80,32 +80,21 @@ public class ChoosePlayerFragment extends Fragment {
 
                     final Button firstPlayer = (Button) getView().findViewById(R.id.firstPlayer);
                     final Button secondPlayer = (Button) getView().findViewById(R.id.secondPlayer);
-
-                    int i = 0;
-                    for (DataSnapshot player : battle.child("states").getChildren()) {
-                        if (i == 0)
-                            firstPlayer.setText(player.getKey());
-                        else {
-                            secondPlayer.setText(player.getKey());
-                            break;
-                        }
-                        i++;
-                    }
+                    firstPlayer.setText(battle.child("states").child("0").child("name").getValue().toString());
+                    secondPlayer.setText(battle.child("states").child("1").child("name").getValue().toString());
 
                     firstPlayer.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (onPlayerChooseListener != null)
-                                onPlayerChooseListener.onPlayerChoose(firstPlayer.getText().toString(),
-                                        secondPlayer.getText().toString());
+                                onPlayerChooseListener.onPlayerChoose("0", "1");
                         }
                     });
                     secondPlayer.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (onPlayerChooseListener != null)
-                                onPlayerChooseListener.onPlayerChoose(secondPlayer.getText().toString(),
-                                        firstPlayer.getText().toString());
+                                onPlayerChooseListener.onPlayerChoose("1", "0");
                         }
                     });
                 }

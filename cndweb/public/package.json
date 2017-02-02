@@ -1,0 +1,19 @@
+{
+  "name": "cnd",
+  "version": "1.0.0",
+  "description": "CnD web client",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Oksana Pokrovskaya",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.14.1"
+  },
+  "dependencies": {
+    "firebase": "^3.6.7",
+    "react": "^15.4.2",
+    "reactfire": "^1.0.0"
+  }
+}
