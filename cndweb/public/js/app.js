@@ -7,6 +7,33 @@ var config = {
   };
 firebase.initializeApp(config);
 
+var S = React.createClass({
+    mixins: [ReactFireMixin],
+
+    getInitialState: function() {
+    return {
+        turn: {},
+        cards: []
+      };
+    },
+
+    componentWillMount: function() {
+        var turnRef = firebase.database().ref("battles/35:74:d6:65/turns/" + this.props.lastturn);
+        this.bindAsObject(turnRef, "turn");
+        var cardsRef = firebase.database().ref("cards");
+        this.bindAsArray(cardsRef, "cards");
+    },
+
+    render: function() {
+        var spellname;
+        for (var i = 0; i < this.state.cards.length; i++) {
+            if (this.state.cards[i][".key"].localeCompare(this.state.turn.card) == 0)
+                spellname = this.state.cards[i]["name"];
+        }
+        return <b style={{textAlign: "center", fontSize: "20pt", color: "#FF4081"}}>{spellname}</b>;
+    }
+});
+
 var Spell = React.createClass({
     mixins: [ReactFireMixin],
 
@@ -27,16 +54,15 @@ var Spell = React.createClass({
     render: function() {
         if (this.state.turn.target == this.props.lastturn % 2)
             return false;
-        var spellname;
-        for (var i = 0; i < this.state.cards.length; i++) {
-            if (this.state.cards[i][".key"].localeCompare(this.state.turn.card) == 0)
-                spellname = this.state.cards[i]["name"];
-        }
-	if (this.state.turn.target == 0)
-            spellname = "<- " + spellname;
-	if (this.state.turn.target == 1)
-            spellname = spellname + " ->";
-        return <div><b style={{textAlign: "center", fontSize: "20pt", color: "#FF4081"}}>{spellname}</b></div>;
+        var arrow = "";
+	if (this.state.turn.target == 0) {
+            arrow = "<- ";
+            return <div><b style={{textAlign: "center", fontSize: "20pt", color: "#FF4081"}}>{arrow}</b><S lastturn={this.props.lastturn}/></div>;
+	}
+	else {
+            arrow = " ->";
+            return <div><S lastturn={this.props.lastturn}/><b style={{textAlign: "center", fontSize: "20pt", color: "#FF4081"}}>{arrow}</b></div>;
+	}
     }
 });
 
@@ -65,7 +91,7 @@ var SelfSpell = React.createClass({
             if (this.state.cards[i][".key"].localeCompare(this.state.turn.card) == 0)
                 spellname = this.state.cards[i]["name"];
         }
-        return <div><b style={{textAlign: "center", fontSize: "20pt", color: "#FF4081"}}>{spellname}</b></div>;
+        return <div><S lastturn={this.props.lastturn}/></div>;
     }
 });
 
