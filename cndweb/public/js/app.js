@@ -18,7 +18,16 @@ var S = React.createClass({
     },
 
     componentWillMount: function() {
-        var turnRef = firebase.database().ref("battles/35:74:d6:65/turns/" + this.props.lastturn);
+	var turnRef = firebase.database().ref("battles/35:74:d6:65/turns/" + this.props.lastturn);
+        this.bindAsObject(turnRef, "turn");
+        var cardsRef = firebase.database().ref("cards");
+        this.bindAsArray(cardsRef, "cards");
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+      	this.unbind("cards");
+      	this.unbind("turn");
+      	var turnRef = firebase.database().ref("battles/35:74:d6:65/turns/" + nextProps.lastturn);
         this.bindAsObject(turnRef, "turn");
         var cardsRef = firebase.database().ref("cards");
         this.bindAsArray(cardsRef, "cards");
@@ -39,20 +48,23 @@ var Spell = React.createClass({
 
     getInitialState: function() {
     return {
-        turn: {},
-        cards: []
+        turn: {}
       };
     },
 
     componentWillMount: function() {
         var turnRef = firebase.database().ref("battles/35:74:d6:65/turns/" + this.props.lastturn);
         this.bindAsObject(turnRef, "turn");
-        var cardsRef = firebase.database().ref("cards");
-        this.bindAsArray(cardsRef, "cards");
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+      	this.unbind("turn");
+      	var turnRef = firebase.database().ref("battles/35:74:d6:65/turns/" + nextProps.lastturn);
+        this.bindAsObject(turnRef, "turn");
     },
 
     render: function() {
-        if (this.state.turn.target == this.props.lastturn % 2)
+        if (this.state.turn == undefined || this.state.turn.target == this.props.lastturn % 2)
             return false;
         var arrow = "";
 	if (this.state.turn.target == 0) {
@@ -71,26 +83,24 @@ var SelfSpell = React.createClass({
 
     getInitialState: function() {
     return {
-        turn: {},
-        cards: []
+        turn: {}
       };
     },
 
     componentWillMount: function() {
         var turnRef = firebase.database().ref("battles/35:74:d6:65/turns/" + this.props.lastturn);
         this.bindAsObject(turnRef, "turn");
-        var cardsRef = firebase.database().ref("cards");
-        this.bindAsArray(cardsRef, "cards");
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+      	this.unbind("turn");
+      	var turnRef = firebase.database().ref("battles/35:74:d6:65/turns/" + nextProps.lastturn);
+        this.bindAsObject(turnRef, "turn");
     },
 
     render: function() {
-        if (this.state.turn.target != this.props.lastturn % 2 || this.state.turn.target != this.props.id)
+        if (this.state.turn == undefined || this.state.turn.target != this.props.lastturn % 2 || this.state.turn.target != this.props.id)
             return false;
-        var spellname;
-        for (var i = 0; i < this.state.cards.length; i++) {
-            if (this.state.cards[i][".key"].localeCompare(this.state.turn.card) == 0)
-                spellname = this.state.cards[i]["name"];
-        }
         return <div><S lastturn={this.props.lastturn}/></div>;
     }
 });
