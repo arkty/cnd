@@ -23,6 +23,9 @@ void Cloud::beginBattle(String battleId, int player) {
   this->battleId = battleId;
   this->turnNumber = player;
   
+  Firebase.remove("battles/" + battleId + "/turns");
+  if(firebaseFailed()) return;  
+  
   Firebase.setInt("battles/" + battleId + "/states/" + player + "/hp", 50);
   if(firebaseFailed()) return;  
 

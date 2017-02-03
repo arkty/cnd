@@ -9,8 +9,11 @@
 
 #define READY_PIN D1
 
-const String NEW_GAME_UID = "35:74:d6:65";
-const int PLAYER = 0;
+const String PLAYER_0_UID = "d5:8d:d6:65";
+const String PLAYER_1_UID = "05:bc:a0:a5";
+
+int PLAYER = -1;
+
 Scanner scanner(SS_PIN, RST_PIN);
 Cloud cloud;
 
@@ -40,9 +43,11 @@ void loop() {
     digitalWrite(READY_PIN, LOW);    
   
     // new battle
-    if(NEW_GAME_UID.equals(card)) {
-      Serial.println("New game started!");      
-      cloud.beginBattle(card, PLAYER);      
+    if(PLAYER_0_UID.equals(card) || PLAYER_1_UID.equals(card)) {
+      PLAYER = PLAYER_1_UID.equals(card) ? 1 : 0;
+      Serial.print("New game: player = ");
+      Serial.println(PLAYER);
+      cloud.beginBattle("35:74:d6:65", PLAYER);      
       
     } else {
       cloud.writeTurn(card, PLAYER);      
