@@ -10,6 +10,8 @@ def processTurn(f, battleId, source, target, card)
 
   f.get("battles/#{battleId}/states").each_with_index do |state, index|
 
+    p "From #{source} -> #{target} : #{index}"
+
     if(index == source)
       state['mana'] -= card[:mana]
     end
@@ -22,21 +24,22 @@ def processTurn(f, battleId, source, target, card)
       end
     end
 
-    next if state['effects'].nil?
+    # Process effects
+    unless state['effects'].nil?
+      state['effects'].each { |e| e.symbolize_keys! }
 
-    state['effects'].each { |e| e.symbolize_keys! }
+      state['effects'].each_with_index do |fb_effect, key|
 
-    state['effects'].each_with_index do |fb_effect, key|
+        effect = @effects.select {|e| e[:id] == fb_effect[:id]}[0]
 
-      effect = @effects.select {|e| e[:id] == fb_effect[:id]}[0]
+        effect[:action].(state)
 
-      effect[:action].(state)
+        fb_effect[:duration] -= 1
+        if fb_effect[:duration] <= 0
+          state['effects'].delete(fb_effect)
+        end
 
-      fb_effect[:duration] -= 1
-      if fb_effect[:duration] <= 0
-        state['effects'].delete(fb_effect)
       end
-
     end
 
     f.put("battles/#{battleId}/states/#{index}", state)
