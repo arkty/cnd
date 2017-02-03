@@ -36,15 +36,18 @@ public class MainActivity extends AppCompatActivity {
         database.getReference().child("battles").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot battles) {
+
                 Log.d(TAG, "Value is: " + battles);
                 final List<String> battleIds = new ArrayList<String>();
                 for (DataSnapshot battle : battles.getChildren())
                     battleIds.add(battle.getKey());
+
                 if (battleIds.size() == 0) {
                     noBattles.setVisibility(View.VISIBLE);
                     someBattles.setVisibility(View.GONE);
                     return;
                 }
+
                 someBattles.setVisibility(View.VISIBLE);
                 noBattles.setVisibility(View.GONE);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this,
