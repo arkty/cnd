@@ -125,7 +125,7 @@ public class StatsFragment extends Fragment {
                         if (opponent.hasChild("hp") && opponent.hasChild("mana")) {
                             int hp = Integer.parseInt(opponent.child("hp").getValue().toString());
                             float thidPart = maxHp / 3.0f;
-                            if (hp == 0) {
+                            if (hp <= 0) {
                                 noStats.setImageResource(R.drawable.grumpy);
                                 return;
                             }
