@@ -4,7 +4,7 @@ admin.initializeApp(functions.config().firebase);
 
 exports.effectFinished = functions.database.ref('/battles/{battleId}/states/{playerId}/effects/{effectIndex}').onWrite(event => {
     effect = event.data.current.val();
-    if (effect.duration === 0)
+    if (effect != null && effect.duration === 0)
         return event.data.adminRef.root.child('battles').child(event.params.battleId).child('states')
                 .child(event.params.playerId).child('effects').child(event.params.effectIndex).remove();
 });
@@ -16,10 +16,10 @@ exports.newTurn = functions.database.ref('/battles/{battleId}/turns/{turnId}').o
   }
 
   // читаем ходы
-  admin.database().ref('/battles/' + event.params.battleId + '/turns').once('value')
+  admin.database().ref('/battles/' + event.params.battleId + '/turns/' + event.params.turnId).once('value')
 	.then(function(snapshot) {
       // выясняем, кто кастит в этот ход
-      var whoCasts = (snapshot.numChildren() + 1) % 2;
+      var whoCasts = event.params.turnId % 2;
       // читаем игроков
       admin.database().ref('/battles/' + event.params.battleId + '/states').once('value')
       .then(function(snapshot) {
@@ -57,13 +57,13 @@ exports.newTurn = functions.database.ref('/battles/{battleId}/turns/{turnId}').o
       })
   })
 });
-
+	
 function playEffects(player) {
     if (!player.effects)
         return;
     for (var i = 0; i < player.effects.length; i++) {
         var effect = player.effects[i];
-        if (effect.duration > 0) {
+        if (effect && effect.duration > 0) {
             eval(effect.id + '(player)');
             effect.duration--;
         }
